@@ -1,0 +1,26 @@
+{
+  "name": "pactum-flow-captain-api",
+  "version": "1.0.0",
+  "description": "Backend security service for pactum flow",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pactumjs/pactum-flow-captain-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pactumjs/pactum-flow-captain-api/issues"
+  },
+  "homepage": "https://github.com/pactumjs/pactum-flow-captain-api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.4",
+    "swagger-express-mw": "^0.7.0",
+    "swagger-tools": "^0.10.4"
+  }
+}

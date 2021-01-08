@@ -1,0 +1,5 @@
+swagger:
+  mapErrorsToJson: true
+  doc:
+    raw: /api/flow/captain/v1/json
+    ui: /api/flow/captain/v1

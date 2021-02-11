@@ -10,6 +10,15 @@ produces:
   - "application/json"
   - "text/html"
   - "text/plain"
+
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  SessionAuth:
+    type: apiKey
+    in: header
+    name: x-access-token
+
 paths:
   /health:
     get:
@@ -24,6 +33,54 @@ paths:
           schema:
             $ref: "#/definitions/HealthResponse"
     x-swagger-router-controller: "health.controller"
+  /session:
+    post:
+      tags:
+        - "Session"
+      description: "Session"
+      operationId: "postSession"
+      parameters: []
+      security:
+        - BasicAuth: []
+      consumes:
+        - "application/octet-stream"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/HealthResponse"
+    delete:
+      tags:
+        - "Session"
+      description: "Session"
+      operationId: "deleteSession"
+      parameters: 
+        - in: "query"
+          name: "username"
+          description: "Username to invalidate session"
+          type: "string"
+      security:
+        - SessionAuth: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/HealthResponse"
+    get:
+      tags:
+        - "Session"
+      description: "Validate Session"
+      operationId: "getUserSession"
+      parameters: []
+      security:
+        - SessionAuth: []   
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/HealthResponse"
+    x-swagger-router-controller: "session.controller"
+
 definitions:
   HealthResponse:
     description: "Health Response"

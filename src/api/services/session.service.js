@@ -52,11 +52,13 @@ class SessionService extends BaseService {
   }
 
   async authenticate(credentials) {
-    const { password, _id, createdAt, ...user } = await this.userService.getUserByName(credentials.username);
+    const doc = await this.userService.getUserByName(credentials.username);
 
-    if (!user)
+    if (!doc)
       return null;
 
+    const { password, _id, createdAt, ...user } = doc;
+    
     const isMatch = bcrypt.compareSync(credentials.password, password);
     return !isMatch ? null : user;
   }

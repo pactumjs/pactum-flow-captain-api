@@ -4,7 +4,8 @@
   "description": "Backend security service for pactum flow",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/server.js"
+    "start": "nodemon src/server.js",
+    "test": "mocha tests/component"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,9 @@
     "mongoose": "^5.11.4",
     "swagger-express-mw": "^0.7.0",
     "swagger-tools": "^0.10.4"
+  },
+  "devDependencies": {
+    "mocha": "^9.1.1",
+    "pactum": "^3.0.18"
   }
 }

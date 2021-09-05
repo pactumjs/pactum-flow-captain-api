@@ -1,6 +1,7 @@
 const SEM = require('swagger-express-mw');
 const SUI = require('swagger-tools/middleware/swagger-ui');
-const authHandler = require('./auth.middleware');
+const authHandler = require('./auth.handler');
+const sessionHandler = require('./session.handler');
 
 function init(app, rootDir) {
   return new Promise((resolve, reject) => {
@@ -8,14 +9,8 @@ function init(app, rootDir) {
       const swaggerConfig = {
         appRoot: rootDir,
         swaggerSecurityHandlers: {
-          BasicAuth: function (req, res, next) {
-            // check for basic auth header
-            if (!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1) {
-              return res.status(401).json({ message: 'Missing Authorization Header' });
-            }
-            next();
-          },
-          SessionAuth: authHandler
+          BasicAuth: authHandler,
+          SessionAuth: sessionHandler
         }
       };
       SEM.create(swaggerConfig, (err, se) => {

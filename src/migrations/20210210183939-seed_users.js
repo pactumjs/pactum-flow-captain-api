@@ -1,21 +1,18 @@
+const bcrypt = require('bcryptjs');
+
 module.exports = {
+
   async up(db, client) {
     // TODO write your migration here.
     // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
     const session = client.startSession();
     try {
       await session.withTransaction(async () => {
-        await db.collection('users').updateOne({ username: "Admin" }, {
-          $set:
-            { "username": "Admin", "email": "", "roles": { "isAdmin": "true" }, "password": "$2a$10$Cf7Ei2xCPqzDBX7AiNUsdOYU8h7IjLMHJKZy4jlrNNuQJoyLZXYFK", "createdAt": "2021-01-10T00:03:29.658Z" }
-        },
-          { upsert: true });
-
-        await db.collection('users').updateOne({ username: "PactumUser" }, {
-          $set:
-            { "username": "PactumUser", "email": "", "roles": { "isAdmin": "false" }, "password": "$2a$10$v78e6KDAqZ7N7IfWyPgJnuma5vy9jZ0jq0lzbcNwE3kIPbJg6SX2m", "createdAt": "2021-01-10T00:03:29.658Z" }
-        },
-          { upsert: true });
+        const date = new Date();
+        const admin = { "username": "admin", "role": "admin", "password": bcrypt.hashSync('admin', 8), "createdAt": date };
+        const viewer = { "username": "viewer", "role": "viewer", "password": bcrypt.hashSync('viewer', 8), "createdAt": date };
+        await db.collection('users').updateOne({ username: "admin" }, { $set: admin }, { upsert: true });
+        await db.collection('users').updateOne({ username: "viewer" }, { $set: viewer }, { upsert: true });
       });
     } finally {
       await session.endSession();
@@ -26,8 +23,8 @@ module.exports = {
     const session = client.startSession();
     try {
       await session.withTransaction(async () => {
-        await db.collection('users').deleteMany({ username: "Admin" });
-        await db.collection('users').deleteMany({ username: "PactumUser" });
+        await db.collection('users').deleteMany({ username: "admin" });
+        await db.collection('users').deleteMany({ username: "viewer" });
       });
     } finally {
       await session.endSession();

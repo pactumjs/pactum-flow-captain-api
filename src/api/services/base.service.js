@@ -1,14 +1,13 @@
 const { ClientRequestError } = require('../../utils/errors');
 const UserRepository = require('../repository/user.repository');
-const SessionRepository = require('../repository/session.repository');
+
 class BaseService {
 
   constructor(req, res) {
     this.req = req;
     this.res = res;
     this.$repo = {
-      users: new UserRepository(),
-      sessions: new SessionRepository()
+      users: new UserRepository()
     };
     this.$error = {
       ClientRequestError

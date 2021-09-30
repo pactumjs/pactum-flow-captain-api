@@ -29,7 +29,7 @@ class SessionService extends BaseService {
 
   async getUserSession() {
     try {
-      const jwtToken = this.req.headers['x-access-token'];
+      const jwtToken = this.req.headers['x-session-token'];
       const user = jwt.verify(jwtToken, config.auth.token);
 
       if (!user) {

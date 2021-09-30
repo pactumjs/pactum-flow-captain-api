@@ -1,0 +1,17 @@
+services:
+  db:
+    image: mongo:4.2.12
+    ports:
+      - "4001:27017"
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 27017
+    ports:
+      - "3001:3001"
+    volumes:
+      - "./src:/app/src"
+    command: ["./node_modules/.bin/nodemon", "./src/server.js"]

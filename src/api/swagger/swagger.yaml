@@ -17,7 +17,7 @@ securityDefinitions:
   SessionAuth:
     type: apiKey
     in: header
-    name: x-access-token
+    name: x-session-token
 
 paths:
   /health:
@@ -48,24 +48,7 @@ paths:
         200:
           description: "Success"
           schema:
-            $ref: "#/definitions/HealthResponse"
-    delete:
-      tags:
-        - "Session"
-      description: "Session"
-      operationId: "deleteSession"
-      parameters: 
-        - in: "query"
-          name: "username"
-          description: "Username to invalidate session"
-          type: "string"
-      security:
-        - SessionAuth: []
-      responses:
-        200:
-          description: "Success"
-          schema:
-            $ref: "#/definitions/HealthResponse"
+            $ref: "#/definitions/SessionResponse"
     get:
       tags:
         - "Session"
@@ -78,7 +61,7 @@ paths:
         200:
           description: "Success"
           schema:
-            $ref: "#/definitions/HealthResponse"
+            $ref: "#/definitions/Session"
     x-swagger-router-controller: "session.controller"
 
 definitions:
@@ -90,3 +73,25 @@ definitions:
         type: "string"
     example:
       message: "OK"
+  SessionResponse:
+    description: 'session response'
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      token:
+        type: "string"
+    example:
+      username: "admin"
+      token: "abc"
+  Session:
+    description: 'session'
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      role:
+        type: "string"
+    example:
+      username: "admin"
+      role: "admin"

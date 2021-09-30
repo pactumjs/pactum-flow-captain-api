@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "mocha": "^9.1.1",
+    "nodemon": "^2.0.13",
     "pactum": "^3.0.18"
   }
 }

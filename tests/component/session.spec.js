@@ -2,25 +2,36 @@ const pactum = require('pactum');
 
 describe('Create Session', () => {
 
-  it('create session for admin ', async () => {
+  it('create session for admin', async () => {
     await pactum.spec()
       .post('/api/flow/captain/v1/session')
       .withAuth('admin', 'admin')
       .expectStatus(200)
       .expectJsonLike({
         "username": "admin",
-        "sessionToken": /\w+/
+        "token": /\w+/
       });
   });
 
-  it('create session for viewer ', async () => {
+  it('create session for viewer', async () => {
     await pactum.spec()
       .post('/api/flow/captain/v1/session')
       .withAuth('viewer', 'viewer')
       .expectStatus(200)
       .expectJsonLike({
         "username": "viewer",
-        "sessionToken": /\w+/
+        "token": /\w+/
+      });
+  });
+
+  it('create session for scanner', async () => {
+    await pactum.spec()
+      .post('/api/flow/captain/v1/session')
+      .withAuth('scanner', 'scanner')
+      .expectStatus(200)
+      .expectJsonLike({
+        "username": "scanner",
+        "token": /\w+/
       });
   });
 
@@ -55,12 +66,12 @@ describe('Read Session', () => {
     admin_token = await pactum.spec()
       .post('/api/flow/captain/v1/session')
       .withAuth('admin', 'admin')
-      .returns('sessionToken');
+      .returns('token');
     
     viewer_token = await pactum.spec()
       .post('/api/flow/captain/v1/session')
       .withAuth('viewer', 'viewer')
-      .returns('sessionToken');  
+      .returns('token');  
   });
 
   it('get admin session', async () => {

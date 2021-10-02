@@ -19,8 +19,8 @@ class SessionService extends BaseService {
       if (!authenticatedUser) {
         return this.res.status(401).json({ message: 'Invalid Authentication Credentials' });
       }
-      const user = await this.createJwtSession(authenticatedUser);
-      return this.res.status(200).json(user);
+      const session = await this.createJwtSession(authenticatedUser);
+      return this.res.status(200).json(session);
 
     } catch (error) {
       this.handleError(error);
@@ -47,7 +47,7 @@ class SessionService extends BaseService {
     const token = jwt.sign({ session: payload }, config.auth.token, { expiresIn: '30m' });
     return {
       username: payload.username,
-      sessionToken: token
+      token
     }
   }
 

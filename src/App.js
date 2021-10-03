@@ -21,9 +21,8 @@ class App {
         url: `mongodb://${config.mongo.host}:${config.mongo.port}`,
         databaseName: config.mongo.name,
         options: config.mongo.options,
-
       },
-      migrationsDir: "./src/migrations",
+      migrationsDir: __dirname + "/migrations",
       changelogCollectionName: "migrations",
       migrationFileExtension: ".js"
     });

@@ -7,7 +7,8 @@ const config = {
     name: env.DB_NAME || 'pactum',
     options: {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      createIndexes: true
     }
   },
   auth: {

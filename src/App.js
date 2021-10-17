@@ -1,8 +1,7 @@
-const crypto = require('crypto');
 const express = require('express');
 const http = require('http');
 const mongoose = require('mongoose');
-const mm = require('migrate-mongo');
+const seeds = require('./seeds');
 
 const config = require('./config');
 
@@ -15,43 +14,11 @@ class App {
     this.server = http.createServer(this.app);
   }
 
-  async runMigrations() {
-    mm.config.set({
-      mongodb: {
-        url: `mongodb://${config.mongo.host}:${config.mongo.port}`,
-        databaseName: config.mongo.name,
-        options: config.mongo.options,
-      },
-      migrationsDir: __dirname + "/migrations",
-      changelogCollectionName: "migrations",
-      migrationFileExtension: ".js"
-    });
-    const { db, client } = await mm.database.connect();
-    try {
-      console.log(`Running UP Migrations`);
-      const migratedScripts = await mm.up(db, client);
-      migratedScripts.forEach(fileName => console.log('Migrated:', fileName));
-    } catch (error) {
-      console.log('Unable to run up-migrations');
-      console.log(error);
-      console.log(`Running Down Migrations`);
-      const migratedDown = await mm.down(db, client);
-      migratedDown.forEach(fileName => console.log('Migrated Down:', fileName));
-    } finally {
-      const migrationStatus = await mm.status(db);
-      console.log(`Migration Status:`);
-      const migrations = [];
-      migrationStatus.forEach(({ fileName, appliedAt }) => migrations.push({ fileName, appliedAt }));
-      console.table(migrations);
-      await client.close();
-    }
-  }
-
   async init() {
     this.handleInterruptions();
-    await this.runMigrations();
     await this.initDatabase();
     await this.initMiddleware();
+    await seeds.run();
   }
 
   handleInterruptions() {

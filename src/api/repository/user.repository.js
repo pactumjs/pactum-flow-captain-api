@@ -3,11 +3,11 @@ const Users = require('../models/user.model');
 class UserRepository {
 
   async get(query) {
-    return Users.find(query);
+    return Users.find(query, {}, { lean: true });
   }
 
   async getByUserName(username) {
-    return Users.findOne({username}, {}, {lean:true});
+    return Users.findOne({ username }, {}, { lean: true });
   }
 
   async save(data) {
@@ -21,7 +21,7 @@ class UserRepository {
   }
 
   updateProcess(username, data) {
-    return Users.updateOne({ username }, { $set: data });
+    return Users.updateOne({ username }, { $set: data }, { lean: true });
   }
 
 }

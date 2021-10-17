@@ -80,6 +80,7 @@ describe('Read Session', () => {
       .withHeaders('x-session-token', admin_token)
       .expectStatus(200)
       .expectJson({
+        "__v": 0,
         "username": "admin",
         "role": "admin"
       });
@@ -91,6 +92,7 @@ describe('Read Session', () => {
       .withHeaders('x-session-token', viewer_token)
       .expectStatus(200)
       .expectJson({
+        "__v": 0,
         "username": "viewer",
         "role": "viewer"
       });

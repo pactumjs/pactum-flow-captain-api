@@ -22,7 +22,6 @@
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "migrate-mongo": "^8.1.4",
     "mongoose": "^5.11.4",
     "swagger-express-mw": "^0.7.0",
     "swagger-tools": "^0.10.4"

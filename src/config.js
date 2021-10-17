@@ -8,7 +8,7 @@ const config = {
     options: {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      createIndexes: true
+      useCreateIndex: true
     }
   },
   auth: {

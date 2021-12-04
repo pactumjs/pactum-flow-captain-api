@@ -64,6 +64,38 @@ paths:
             $ref: "#/definitions/Session"
     x-swagger-router-controller: "session.controller"
   /users:
+    post:
+      tags:
+        - "User"
+      description: "Create User"
+      operationId: "postUser"
+      parameters:
+        - in: "body"
+          name: "user"
+          description: "user to create"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      security:
+        - SessionAuth: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/HealthResponse"
+    get:
+      tags:
+        - "User"
+      description: "Get Users"
+      operationId: "getUsers"
+      parameters: []
+      security:
+        - SessionAuth: []   
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/HealthResponse"
     put:
       tags:
         - "User"
@@ -76,6 +108,26 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/User"
+      security:
+        - SessionAuth: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/HealthResponse"
+    x-swagger-router-controller: "user.controller"
+  /users/{username}:
+    delete:
+      tags:
+        - "User"
+      description: "Delete User"
+      operationId: "deleteUser"
+      parameters:
+        - in: "path"
+          name: "username"
+          description: "username to delete"
+          required: true
+          type: "string"
       security:
         - SessionAuth: []
       responses:

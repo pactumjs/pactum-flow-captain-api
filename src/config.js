@@ -14,6 +14,11 @@ const config = {
   },
   auth: {
     token: env.AUTH_TOKEN || Buffer.from('admin:admin').toString('base64')
+  },
+  roles: {
+    ADMIN: 'admin',
+    VIEWER: 'viewer',
+    SCANNER: 'scanner'
   }
 };
 

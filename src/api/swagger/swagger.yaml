@@ -63,6 +63,27 @@ paths:
           schema:
             $ref: "#/definitions/Session"
     x-swagger-router-controller: "session.controller"
+  /users:
+    put:
+      tags:
+        - "User"
+      description: "Update User"
+      operationId: "updateUser"
+      parameters:
+        - in: "body"
+          name: "user"
+          description: "user to update"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      security:
+        - SessionAuth: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/HealthResponse"
+    x-swagger-router-controller: "user.controller"
 
 definitions:
   HealthResponse:
@@ -94,4 +115,23 @@ definitions:
         type: "string"
     example:
       username: "admin"
+      role: "admin"
+  User:
+    description: 'user'
+    type: "object"
+    properties:
+      username:
+        type: "string"
+        minLength: 1
+      password:
+        type: "string"
+        minLength: 1
+      role:
+        type: "string"
+        minLength: 1
+    required:
+      - "username"
+    example:
+      username: "admin"
+      password: "admin"
       role: "admin"

@@ -16,6 +16,10 @@ class UserRepository {
     return doc.toObject();
   }
 
+  update(user) {
+    return Users.findOneAndUpdate({ username: user.username }, user);
+  }
+
   delete(username) {
     return Users.deleteOne({ username: username });
   }

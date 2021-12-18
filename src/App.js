@@ -2,10 +2,13 @@ const express = require('express');
 const rate_limit = require("express-rate-limit");
 const http = require('http');
 const mongoose = require('mongoose');
+require('loglevel').setLevel('INFO')
+
 const seeds = require('./seeds');
 
 const config = require('./config');
 
+const logger_middleware = require('./middleware/logger.middleware');
 const swaggerMiddleware = require('./middleware/swagger.middleware');
 
 class App {
@@ -37,6 +40,7 @@ class App {
   }
 
   async initMiddleware() {
+    this.app.use(logger_middleware);
     this.app.use(express.json());
     this.app.use('/api/flow/captain/v1/session', rate_limit(config.auth_rate_limit_options));
     await swaggerMiddleware.init(this.app, __dirname);

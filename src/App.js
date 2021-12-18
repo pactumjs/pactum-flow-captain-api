@@ -1,4 +1,5 @@
 const express = require('express');
+const rate_limit = require("express-rate-limit");
 const http = require('http');
 const mongoose = require('mongoose');
 const seeds = require('./seeds');
@@ -37,6 +38,7 @@ class App {
 
   async initMiddleware() {
     this.app.use(express.json());
+    this.app.use('/api/flow/captain/v1/session', rate_limit(config.auth_rate_limit_options));
     await swaggerMiddleware.init(this.app, __dirname);
   }
 

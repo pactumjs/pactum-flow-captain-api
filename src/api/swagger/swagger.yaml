@@ -180,7 +180,10 @@ definitions:
         minLength: 1
       role:
         type: "string"
-        minLength: 1
+        enum:
+          - admin
+          - scanner
+          - viewer
     required:
       - "username"
     example:

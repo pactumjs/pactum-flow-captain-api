@@ -137,6 +137,18 @@ describe('Create User', () => {
       .expectStatus(403);
   });
 
+  it('should fail to create user with invalid role', async () => {
+    await pactum.spec()
+      .post('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
+      .withJson({
+        "username": "user1",
+        "password": "password",
+        "role": "editor"
+      })
+      .expectStatus(400);
+  });
+
   afterEach(async () => {
     await pactum.spec()
       .delete('/api/flow/captain/v1/users/{username}')

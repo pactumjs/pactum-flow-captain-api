@@ -4,6 +4,7 @@ function handler(req, _, __, cb) {
     cb(new Error('Missing Authorization Header'));
   }
   cb();
+  req.log.info(req.method, req.path);
 }
 
 module.exports = handler;

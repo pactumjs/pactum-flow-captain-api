@@ -1,4 +1,4 @@
-var log = require('loglevel');
+const log = require('loglevel');
 
 class Logger {
 
@@ -8,7 +8,11 @@ class Logger {
   }
 
   info(...msg) {
-    log.info(this.id, this.user, " - ", ...msg);
+    log.info('INFO', this.id, this.user, " - ", ...msg);
+  }
+
+  error(...msg) {
+    log.error('ERROR', this.id, this.user, " - ", ...msg);
   }
   
 }

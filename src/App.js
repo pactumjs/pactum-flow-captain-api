@@ -2,7 +2,7 @@ const express = require('express');
 const rate_limit = require("express-rate-limit");
 const http = require('http');
 const mongoose = require('mongoose');
-require('loglevel').setLevel('INFO')
+require('loglevel').setLevel('INFO');
 
 const seeds = require('./seeds');
 

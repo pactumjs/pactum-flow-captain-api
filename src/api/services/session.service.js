@@ -43,8 +43,8 @@ class SessionService extends BaseService {
   }
 
   async createJwtSession(payload) {
-    // create a jwt token that is valid for 30min
-    const token = jwt.sign({ session: payload }, config.auth.token, { expiresIn: '30m' });
+    // create a jwt token
+    const token = jwt.sign({ session: payload }, config.auth.token, { expiresIn: config.session.expiresIn });
     return {
       username: payload.username,
       token

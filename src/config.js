@@ -23,6 +23,9 @@ const config = {
   auth_rate_limit_options: {
     windowMs: env.AUTH_RATE_LIMIT_WINDOW || 15 * 60 * 1000,
     max: env.AUTH_RATE_LIMIT_MAX || 100
+  },
+  session: {
+    expiresIn: env.SESSION_EXPIRES_IN || '1d'
   }
 };
 

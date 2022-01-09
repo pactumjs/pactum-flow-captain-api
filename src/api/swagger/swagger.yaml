@@ -178,6 +178,9 @@ definitions:
       password:
         type: "string"
         minLength: 1
+      email:
+        type: "string"
+        minLength: 1
       role:
         type: "string"
         enum:
@@ -189,4 +192,5 @@ definitions:
     example:
       username: "admin"
       password: "admin"
+      email: "admin@example.com"
       role: "admin"

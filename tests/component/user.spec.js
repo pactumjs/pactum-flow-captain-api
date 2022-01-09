@@ -1,75 +1,5 @@
 const pactum = require('pactum');
 
-describe('Update User', () => {
-
-  it('update user password', async () => {
-    await pactum.spec()
-      .put('/api/flow/captain/v1/users')
-      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
-      .withJson({
-        "username": "admin",
-        "password": "admin"
-      })
-      .expectStatus(200);
-  });
-
-  it('update user role', async () => {
-    await pactum.spec()
-      .put('/api/flow/captain/v1/users')
-      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
-      .withJson({
-        "username": "admin",
-        "role": "admin"
-      })
-      .expectStatus(200);
-  });
-
-  it('should fail to update other users password', async () => {
-    await pactum.spec()
-      .put('/api/flow/captain/v1/users')
-      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
-      .withJson({
-        "username": "viewer",
-        "password": "admin"
-      })
-      .expectStatus(403);
-  });
-
-  it('should fail to update non existing users password', async () => {
-    await pactum.spec()
-      .put('/api/flow/captain/v1/users')
-      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
-      .withJson({
-        "username": "root",
-        "password": "admin"
-      })
-      .expectStatus(404);
-  });
-
-  it('should fail to update non existing users role', async () => {
-    await pactum.spec()
-      .put('/api/flow/captain/v1/users')
-      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
-      .withJson({
-        "username": "root",
-        "role": "admin"
-      })
-      .expectStatus(404);
-  });
-
-  it('should fail to update users role by a non-admin user', async () => {
-    await pactum.spec()
-      .put('/api/flow/captain/v1/users')
-      .withHeaders('x-session-token', '$S{VIEWER_SESSION_TOKEN}')
-      .withJson({
-        "username": "viewer",
-        "role": "admin"
-      })
-      .expectStatus(403);
-  });
-
-});
-
 describe('Create User', () => {
 
   it('create new user', async () => {
@@ -78,10 +8,25 @@ describe('Create User', () => {
       .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
       .withJson({
         "username": "user1",
-        "password": "password",
+        "password": "Password$1",
         "role": "admin"
       })
       .expectStatus(200);
+  });
+
+  it('create new user - password validation failed', async () => {
+    await pactum.spec()
+      .post('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
+      .withJson({
+        "username": "user1",
+        "password": "ad",
+        "role": "admin"
+      })
+      .expectStatus(422)
+      .expectJson({
+        "message": "password validations failed: The string should have a minimum length of 4 characters,The string should have a minimum of 1 uppercase letter,The string should have a minimum of 1 digit"
+      });
   });
 
   it('create new user without role', async () => {
@@ -90,7 +35,7 @@ describe('Create User', () => {
       .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
       .withJson({
         "username": "user1",
-        "password": "password"
+        "password": "Password$1"
       })
       .expectStatus(200);
     await pactum.spec()
@@ -112,17 +57,7 @@ describe('Create User', () => {
       .withJson({
         "username": "user1"
       })
-      .expectStatus(200);
-    await pactum.spec()
-      .get('/api/flow/captain/v1/users')
-      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
-      .expectStatus(200)
-      .expectJsonLike([
-        {
-          "username": "user1",
-          "role": "viewer"
-        }
-      ]);
+      .expectStatus(422);
   });
 
   it('should fail to create user with non-admin', async () => {
@@ -131,7 +66,7 @@ describe('Create User', () => {
       .withHeaders('x-session-token', '$S{VIEWER_SESSION_TOKEN}')
       .withJson({
         "username": "user1",
-        "password": "password",
+        "password": "Password$1",
         "role": "admin"
       })
       .expectStatus(403);
@@ -143,10 +78,22 @@ describe('Create User', () => {
       .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
       .withJson({
         "username": "user1",
-        "password": "password",
+        "password": "Password$1",
         "role": "editor"
       })
       .expectStatus(400);
+  });
+
+  it('should fail to create user with invalid password', async () => {
+    await pactum.spec()
+      .post('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
+      .withJson({
+        "username": "user1",
+        "password": "welcome",
+        "role": "viewer"
+      })
+      .expectStatus(422);
   });
 
   afterEach(async () => {
@@ -167,7 +114,7 @@ describe('Fetch User', () => {
       .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
       .withJson({
         "username": "user1",
-        "password": "password",
+        "password": "Password$1",
         "role": "admin"
       })
       .expectStatus(200);
@@ -186,36 +133,160 @@ describe('Fetch User', () => {
       .get('/api/flow/captain/v1/users')
       .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
       .expectStatus(200)
-      .expectJson([
+      .expectJsonLike([
         {
           "username": "admin",
-          "role": "admin"
+          "email": "admin@localhost",
+          "role": "admin",
+          "modifiedAt": /\w+/,
+          "createdAt": /\w+/
         },
         {
           "username": "viewer",
-          "role": "viewer"
+          "email": "viewer@localhost",
+          "role": "viewer",
+          "modifiedAt": /\w+/,
+          "createdAt": /\w+/
         },
         {
           "username": "scanner",
-          "role": "scanner"
+          "email": "scanner@localhost",
+          "role": "scanner",
+          "modifiedAt": /\w+/,
+          "createdAt": /\w+/
         },
         {
           "username": "user1",
-          "role": "admin"
+          "email": "",
+          "role": "admin",
+          "modifiedAt": /\w+/,
+          "createdAt": /\w+/
         }
       ]);
   });
 
 });
 
-describe('Delete User', () => {
+describe('Update User', () => {
 
-  it('should fail to delete own user', async () => {
+  before(async () => {
+    await pactum.spec()
+      .post('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
+      .withJson({
+        "username": "user1",
+        "password": "Password$1",
+        "role": "admin"
+      })
+      .expectStatus(200);
+
+      await pactum.spec()
+      .post('/api/flow/captain/v1/session')
+      .withAuth('user1', 'Password$1')
+      .stores('USER_SESSION_TOKEN', 'token')
+  });
+
+  after(async () => {
     await pactum.spec()
       .delete('/api/flow/captain/v1/users/{username}')
-      .withPathParams('username', 'admin')
+      .withPathParams('username', 'user1')
       .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
-      .expectStatus(400);
+      .expectStatus(200);
+  });
+
+  it('update user password', async () => {
+    await pactum.spec()
+      .put('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{USER_SESSION_TOKEN}')
+      .withJson({
+        "username": "user1",
+        "password": "Password$12"
+      })
+      .expectStatus(200);
+  });
+
+  it('update user role', async () => {
+    await pactum.spec()
+      .put('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{USER_SESSION_TOKEN}')
+      .withJson({
+        "username": "user1",
+        "role": "viewer"
+      })
+      .expectStatus(200);
+  });
+
+  it('should fail to update other users password', async () => {
+    await pactum.spec()
+      .put('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{USER_SESSION_TOKEN}')
+      .withJson({
+        "username": "viewer",
+        "password": "admin"
+      })
+      .expectStatus(403);
+  });
+
+  it('should fail to update non existing users password', async () => {
+    await pactum.spec()
+      .put('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{USER_SESSION_TOKEN}')
+      .withJson({
+        "username": "root",
+        "password": "admin"
+      })
+      .expectStatus(404);
+  });
+
+  it('should fail to update non existing users role', async () => {
+    await pactum.spec()
+      .put('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{USER_SESSION_TOKEN}')
+      .withJson({
+        "username": "root",
+        "role": "admin"
+      })
+      .expectStatus(404);
+  });
+
+  it('should fail to update users role by a non-admin user', async () => {
+    await pactum.spec()
+      .put('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{VIEWER_SESSION_TOKEN}')
+      .withJson({
+        "username": "viewer",
+        "role": "admin"
+      })
+      .expectStatus(403);
+  });
+
+});
+
+describe('Delete User', () => {
+
+  before(async () => {
+    await pactum.spec()
+      .post('/api/flow/captain/v1/users')
+      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
+      .withJson({
+        "username": "user1",
+        "password": "Password$1",
+        "role": "admin"
+      })
+      .expectStatus(200);
+
+      await pactum.spec()
+      .post('/api/flow/captain/v1/session')
+      .withAuth('user1', 'Password$1')
+      .stores('USER_SESSION_TOKEN', 'token')
+  });
+
+  after(async () => {
+    await pactum.spec()
+      .delete('/api/flow/captain/v1/users/{username}')
+      .withPathParams('username', 'user1')
+      .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
+      .expectStatus(200);
   });
 
   it('should fail to delete a user with non-admin', async () => {
@@ -233,6 +304,14 @@ describe('Delete User', () => {
       .withPathParams('username', 'root')
       .withHeaders('x-session-token', '$S{ADMIN_SESSION_TOKEN}')
       .expectStatus(200);
+  });
+
+  it('should fail to delete own user', async () => {
+    await pactum.spec()
+      .delete('/api/flow/captain/v1/users/{username}')
+      .withPathParams('username', 'user1')
+      .withHeaders('x-session-token', '$S{USER_SESSION_TOKEN}')
+      .expectStatus(400);
   });
 
 });

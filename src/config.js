@@ -26,6 +26,17 @@ const config = {
   },
   session: {
     expiresIn: env.SESSION_EXPIRES_IN || '1d'
+  },
+  credValidations: {
+    password: {
+      minLength: parseInt(env.PASSWORD_MIN_LENGTH) || 4,
+      maxLength: parseInt(env.PASSWORD_MAX_LENGTH) || 30,
+      minLowerCase: parseInt(env.PASSWORD_MIN_LOWERCASE) || 0,
+      minUpperCase: parseInt(env.PASSWORD_MIN_UPPERCASE) || 0,
+      minDigits: parseInt(env.PASSWORD_MIN_DIGITS) || 0,
+      minSymbols: parseInt(env.PASSWORD_MIN_SYMBOLS) || 0,
+      blacklistedPass: ['Passw0rd', 'Password123', 'Password'] // Can add more blacklisted passwords to block
+    }
   }
 };
 

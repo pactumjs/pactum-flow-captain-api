@@ -3,11 +3,13 @@ const bcrypt = require('bcryptjs');
 
 const BaseService = require('./base.service');
 const config = require('../../config');
+const ValidationHelper = require('../../utils/validator');
 
 class UserService extends BaseService {
 
   constructor(req, res) {
     super(req, res);
+    this.vHelper = new ValidationHelper();
   }
 
   async getUserByName(userName) {
@@ -25,9 +27,14 @@ class UserService extends BaseService {
       }
       if (target_user.password) {
         if (auth_user.username === target_user.username) {
+          const errList = this.vHelper.vadidatePassword(target_user.password);
+          if (!Array.isArray(errList) && !errList.length) {
+            return this.res.status(422).json({ message: 'password validations failed: ' + errList});
+          }
           await this.$repo.users.update({
             username: target_user.username,
-            password: bcrypt.hashSync(target_user.password, 8)
+            password: bcrypt.hashSync(target_user.password, 8),
+            modifiedAt: Date.now()
           });
         } else {
           return this.res.status(403).json({ message: 'forbidden to update other users password' });
@@ -36,7 +43,8 @@ class UserService extends BaseService {
         if (auth_user.role === config.roles.ADMIN) {
           await this.$repo.users.update({
             username: target_user.username,
-            role: target_user.role
+            role: target_user.role,
+            modifiedAt: Date.now()
           });
         } else {
           return this.res.status(403).json({ message: 'only admins can update users role' });
@@ -60,6 +68,10 @@ class UserService extends BaseService {
       if (db_target_user) {
         return this.res.status(409).json({ message: 'user already exists' });
       }
+      const errList = this.vHelper.vadidatePassword(target_user.password);
+      if (Array.isArray(errList) && errList.length) {
+        return this.res.status(422).json({ message: 'password validations failed: ' + errList});
+      }
       await this.$repo.users.save({
         username: target_user.username,
         password: bcrypt.hashSync(target_user.password || target_user.username, 8),
@@ -79,7 +91,16 @@ class UserService extends BaseService {
         return this.res.status(403).json({ message: 'only admins can fetch users' });
       }
       const users = await this.$repo.users.get();
-      return this.res.status(200).json(users.map(user => { return { username: user.username, role: user.role } }));
+      return this.res.status(200).json(users.map(user => {
+         return { 
+           username: user.username, 
+           email: user.email, 
+           role: user.role, 
+           modifiedAt: user.modifiedAt, 
+           createdAt: user.createdAt 
+          } 
+        }
+        ));
     } catch (error) {
       this.handleError(error);
     }

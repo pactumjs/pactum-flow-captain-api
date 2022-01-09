@@ -10,7 +10,7 @@ async function seed_users() {
   const date = new Date();
   for (let i = 0; i < unseeded_users.length; i++) {
     const username = unseeded_users[i];
-    await repo.save({ username, role: username, password: bcrypt.hashSync(username, 8), createdAt: date });
+    await repo.save({ username, role: username, password: bcrypt.hashSync(username, 8), email: `${username}@localhost` , createdAt: date });
   }
   if (unseeded_users.length > 0) {
     console.log("Seeded Users");

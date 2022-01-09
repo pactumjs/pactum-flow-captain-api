@@ -79,8 +79,10 @@ describe('Read Session', () => {
       .get('/api/flow/captain/v1/session')
       .withHeaders('x-session-token', admin_token)
       .expectStatus(200)
-      .expectJson({
+      .expectJsonLike({
         "__v": 0,
+        "email": "admin@localhost",
+        "modifiedAt": /\w+/,
         "username": "admin",
         "role": "admin"
       });
@@ -91,8 +93,10 @@ describe('Read Session', () => {
       .get('/api/flow/captain/v1/session')
       .withHeaders('x-session-token', viewer_token)
       .expectStatus(200)
-      .expectJson({
+      .expectJsonLike({
         "__v": 0,
+        "email": "viewer@localhost",
+        "modifiedAt": /\w+/,
         "username": "viewer",
         "role": "viewer"
       });
